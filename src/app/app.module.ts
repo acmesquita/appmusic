@@ -12,6 +12,9 @@ import { SearchPage } from '../pages/search/search'
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
+//Services
+import { MusicService } from './shared/music.service'
+
 @NgModule({
   declarations: [
     MyApp,
@@ -35,6 +38,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
     SearchPage
   ],
   providers: [
+    MusicService,
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
