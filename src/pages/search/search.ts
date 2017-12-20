@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { MusicService } from '../../app/shared/music.service';
 
 /**
  * Generated class for the SearchPage page.
@@ -15,13 +16,12 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class SearchPage {
   initializeItems() {
-    this.items = [
-      'Amsterdam',
-      'Bogota'
-    ];
+    this.tracks = [];
+    this.artists =[];
   }
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public navCtrl: NavController,
+             public navParams: NavParams, public musicService: MusicService) {
     this.initializeItems();
   }
 
@@ -30,7 +30,8 @@ export class SearchPage {
   }
 
   searchQuery: string = '';
-  items: string[];
+  tracks: string[] = [];
+  artists: string[] =[];
 
 
   getItems(ev: any) {
@@ -39,17 +40,33 @@ export class SearchPage {
 
     // set val to the value of the searchbar
     let val = ev.target.value;
-
-    // if the value is an empty string don't filter the items
-    if (val && val.trim() != '') {
-      this.items = this.items.filter((item) => {
-        return (item.toLowerCase().indexOf(val.toLowerCase()) > -1);
-      })
+    if(val != null && val.trim() != ''){
+      this.musicService.searchMusic(val, "track")
+                       .subscribe((text)=>text.tracks.items.forEach(element => {
+                          console.log(element);
+                          this.tracks.push(element.name)
+                       }));
+      this.musicService.searchMusic(val, "artist")
+      .subscribe((text)=>text.artists.items.forEach(element => {
+        console.log(element);
+        this.artists.push(element.name)
+     }));
     }
+    // if the value is an empty string don't filter the items
+    
+  }
+
+  playMusicsArtist(artist){
+    this.musicService.getTopTracks(artist).subscribe((text)=>console.log(text))
   }
 
   public playMusic(){
     console.log("Play na música");
+  }
+
+  public playTrack(track){
+    console.log(track)
+    this.musicService.searchMusicById(track).subscribe((text)=>console.log(text))
   }
 
 }
